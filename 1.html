@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>日期转星期工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .valid { background-color: #dff0d8; color: #3c763d; }
+        .invalid { background-color: #f2dede; color: #a94442; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>日期转星期工具</h2>
+        <p>请输入日期（格式：YYYY-MM-DD）：</p>
+        <input type="text" id="dateInput" placeholder="例如：2023-10-09">
+        <button onclick="calculateWeekday()">查询</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateWeekday() {
+            const weekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            const dateStr = document.getElementById('dateInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            // 格式验证（YYYY-MM-DD）
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                showResult("无效日期格式", false);
+                return;
+            }
+
+            // 日期解析
+            const parts = dateStr.split('-');
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1; // JS月份从0开始
+            const day = parseInt(parts[2]);
+
+            // 创建日期对象
+            const date = new Date(year, month, day);
+            
+            // 有效性验证（防止自动进位）
+            if (date.getFullYear() !== year || 
+                date.getMonth() !== month || 
+                date.getDate() !== day) {
+                showResult("无效日期", false);
+                return;
+            }
+
+            // 计算星期
+            const weekdayIndex = date.getDay(); // 0=周日, 1=周一...6=周六
+            showResult(weekdays[weekdayIndex], true);
+        }
+
+        function showResult(text, isValid) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = isValid ? "valid" : "invalid";
+            resultDiv.innerHTML = isValid ? 
+                `📅 计算结果：<strong>${text}</strong>` : 
+                `❌ 错误：${text}`;
+        }
+    </script>
+</body>
+</html>
